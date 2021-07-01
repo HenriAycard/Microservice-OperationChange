@@ -42,3 +42,4 @@ curl -X GET "http://localhost:8080/operation-change/taux/132.30"
 ### retrieve Operation Change by {source} and {dest}
 curl -X GET "http://localhost:8080/operation-change/source/EUR/dest/USD"
 ### retrieve Operation Change by {source} and {dest} and {date}
+curl -X GET "http://localhost:8080/operation-change/source/EUR/dest/USD/date/2021-06-23"

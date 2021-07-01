@@ -30,30 +30,34 @@ public class OperationController {
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<OperationChange> createOperationChange (@RequestBody OperationChange cpe_change) throws JSONException {
 
-        String baseUrl = "http://localhost:8000/taux-change/source/" + cpe_change.getSource() + "/dest/" + cpe_change.getDest() + "/date/" + cpe_change.getDate();
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> response=null;
+        if (cpe_change.getTaux() == null){
+            String baseUrl = "http://localhost:8000/taux-change/source/" + cpe_change.getSource() + "/dest/" + cpe_change.getDest() + "/date/" + cpe_change.getDate();
+            RestTemplate restTemplate = new RestTemplate();
+            ResponseEntity<String> response=null;
 
-        try{
-            response=restTemplate.exchange(baseUrl,
-                    HttpMethod.GET, getHeaders(),String.class);
-        }catch (Exception ex)
-        {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            try{
+                response=restTemplate.exchange(baseUrl,
+                        HttpMethod.GET, getHeaders(),String.class);
+            }catch (Exception ex)
+            {
+                return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
+            JSONObject jsonObj = new JSONObject(response.getBody());
+            BigDecimal taux = new BigDecimal(jsonObj.getString("taux"));
+
+            OperationChange oc = new OperationChange(cpe_change.getSource(), cpe_change.getDest(), cpe_change.getMontant(), taux, cpe_change.getDate());
+
+            try {
+                OperationChange _operationChange = repository.save(oc);
+                return new ResponseEntity<>(_operationChange, HttpStatus.CREATED);
+            } catch (Exception e) {
+                return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         }
 
-        JSONObject jsonObj = new JSONObject(response.getBody());
-        BigDecimal taux = new BigDecimal(jsonObj.getString("taux"));
-
-        OperationChange oc = new OperationChange(cpe_change.getSource(), cpe_change.getDest(), cpe_change.getMontant(), taux, cpe_change.getDate());
-
-        try {
-            OperationChange _operationChange = repository.save(oc);
-            return new ResponseEntity<>(_operationChange, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
+        OperationChange _operationChange = repository.save(cpe_change);
+        return new ResponseEntity<>(_operationChange, HttpStatus.CREATED);
 
     }
 
@@ -136,6 +140,21 @@ public class OperationController {
     public ResponseEntity<List<OperationChange>> getOperationChangeBySourceAndDest(@PathVariable String source, @PathVariable String dest) throws RestClientException, IOException {
         try{
             List<OperationChange> operationChanges = repository.findBySourceAndDest(source, dest);
+
+            if (operationChanges.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity<>(operationChanges, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    // curl -X GET "http://localhost:8080/operation-change/source/EUR/dest/USD/date/2021-06-23"
+    @GetMapping("/operation-change/source/{source}/dest/{dest}/date/{date}")
+    public ResponseEntity<List<OperationChange>> getOperationChangeBySourceAndDestAndDate(@PathVariable String source, @PathVariable String dest, @PathVariable String date) throws RestClientException, IOException {
+        try{
+            List<OperationChange> operationChanges = repository.findBySourceAndDestAndDate(source, dest,date);
 
             if (operationChanges.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
