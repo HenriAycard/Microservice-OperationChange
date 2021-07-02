@@ -10,6 +10,16 @@ Il est possible grâce a ce microservice de publier, requêter, modifier ou bien
 
 ![Screenshot](DiagrammeDeClassOperationChange.png)
 
+# Installation
+## Set up the Spring Boot Application
+```bash
+./mvnw package && java -jar target/operationchange
+```
+## Set up Docker
+```bash
+docker build -t springio/operationchange .
+docker run -p 8080:8080 -t springio/operationchange
+```
 ## Methods
 
 | Methods   | Urls                                                                                  | Actions                                                                           |
@@ -218,46 +228,4 @@ curl -X GET "http://localhost:8080/operation-change/source/EUR/dest/USD/date/202
         "taux": 1.2234
     }
 ]
-```
-
-
-### retrieve Operation Change by {counterpart}
-```bash 
-curl -X GET "http://localhost:8080/operation-change/counterpart/JP_Aycart"  | python -m json.tool
-
-### retrieve Operation Change by {counterpart} by {source} and {dest}
-```bash
-curl -X GET "http://localhost:8080/operation-change/counterpart/Goldman_Perrin/source/EUR/dest/JPY"  | python -m json.tool
-
-### retrieve Operation Change by {counterpart} by {date}
-```bash
-curl -X GET "http://localhost:8080/operation-change/counterpart/Goldman_Perrin/date/2021-06-21"  | python -m json.tool
-
-### retrieve Operation Change by {counterpart} by {source} by {dest} and {date}
-```bash
-curl -X GET "http://localhost:8080/operation-change/counterpart/Goldman_Perrin/source/EUR/dest/JPY/date/2021-06-21"  | python -m json.tool
-
-## DELETE
-### delete Operation Change by {id}
-```bash
-curl -X DELETE "http://localhost:8080/operation-change/id/1243"  | python -m json.tool
-
-## PUT
-### update Operation Change for a defined {id}
-```bash
-curl -X PUT -H "Content-type: application/json" -d "{\"source\" : \"USD\", \"dest\" : \"RON\", \"taux\" : 1.24, \"montant\" : 500, \"date\": \"2021-06-23\", \"counterpart\": \"Cyril_Lignac\"}" "http://localhost:8080/operation-change/id/1243"  | python -m json.tool
-### update montant of an Operation Change for a defined {id}
-```bash
-curl -X PUT "http://localhost:8080/operation-change/id/1243/montant/4000"  | python -m json.tool
-### update date of an Operation Change for a defined {id}
-```bash
-curl -X PUT "http://localhost:8080/operation-change/id/1243/date/2020-06-25"  | python -m json.tool
-### update counterpart of an Operation Change for a defined {id}
-```bash
-curl -X PUT "http://localhost:8080/operation-change/id/1243/counterpart/Jason_Dolphin"  | python -m json.tool
-### update taux of an Operation Change for a defined {id}
-```bash
-curl -X PUT "http://localhost:8080/operation-change/id/1243/taux/106.4"  | python -m json.tool
-```
-```yaml
 ```
