@@ -1,5 +1,6 @@
 package fr.dauphine.miageif.operationchange.OperationChange.Model;
 import java.math.BigDecimal;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -92,6 +93,9 @@ public class OperationChange {
 
     // SETTER
 
+
+    public void setId(Long id_transaction) { this.id_transaction = id_transaction; }
+
     public void setMontant(Integer montant) { this.montant = montant; }
 
     public void setSource(String source) { this.source = source; }
@@ -104,5 +108,16 @@ public class OperationChange {
 
     public void setCounterpart(String counterpart) { this.counterpart = counterpart; }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OperationChange that = (OperationChange) o;
+        return Objects.equals(id_transaction, that.id_transaction) && Objects.equals(source, that.source) && Objects.equals(dest, that.dest) && Objects.equals(montant, that.montant) && Objects.equals(taux, that.taux) && Objects.equals(date, that.date) && Objects.equals(counterpart, that.counterpart);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id_transaction, source, dest, montant, taux, date, counterpart);
+    }
 }
