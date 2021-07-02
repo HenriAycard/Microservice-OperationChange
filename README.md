@@ -51,7 +51,7 @@ docker run -p 8080:8080 -t springio/operationchange
 | GET       | /operation-change/counterpart/{counterpart}/date/{date}retrieve                       | retrieve Operation Change by {counterpart} by {date}                              |
 | GET       | /operation-change/counterpart/{counterpart}/source/{source}/dest/{dest}/date/{date}   | retrieve Operation Change by {counterpart} by {source} by {dest} and {date}       |
 | DELETE    | /operation-change/id/{id}                                                             | delete Operation Change by {id}                                                   |
-| PUT       | /operation-change/id/{id}/taux/{taux}                                                 | update Operation Change by {id}                                                   |
+| PUT       | /operation-change/id/{id}                                                             | update Operation Change by {id}                                                   |
 | PUT       | /operation-change/id/{id}/taux/{taux}                                                 | update Operation Change {taux} by {id}                                            |
 | PUT       | /operation-change/id/{id}/counterpart/{counterpart}                                   | update Operation Change {counterpart} by {id}                                     |
 | PUT       | /operation-change/id/{id}/montant/{montant}                                           | update Operation Change {montant} by {id}                                         |
