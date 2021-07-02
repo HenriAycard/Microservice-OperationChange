@@ -229,3 +229,123 @@ curl -X GET "http://localhost:8080/operation-change/source/EUR/dest/USD/date/202
     }
 ]
 ```
+
+### retrieve Operation Change by {counterpart}
+```bash 
+curl -X GET "http://localhost:8080/operation-change/counterpart/Banque_Radin"  | python -m json.tool
+```
+```yaml
+[
+    {
+        "counterpart": "Banque_Radin",
+        "date": "2021-06-20",
+        "dest": "USD",
+        "id": 1244,
+        "montant": 1000000,
+        "source": "EUR",
+        "taux": 1.2234
+    }
+]
+
+```
+
+  ### retrieve Operation Change by {counterpart} by {source} and {dest}
+```bash
+curl -X GET "http://localhost:8080/operation-change/counterpart/Banque_Radin/source/EUR/dest/USD"  | python -m json.tool
+```
+```yaml
+[
+    {
+        "counterpart": "Banque_Radin",
+        "date": "2021-06-20",
+        "dest": "USD",
+        "id": 1244,
+        "montant": 1000000,
+        "source": "EUR",
+        "taux": 1.2234
+    }
+]
+```
+### retrieve Operation Change by {counterpart} by {date}
+```bash
+curl -X GET "http://localhost:8080/operation-change/counterpart/Banque_Radin/date/2021-06-20"  | python -m json.tool
+```
+```yaml
+[
+    {
+        "counterpart": "Banque_Radin",
+        "date": "2021-06-20",
+        "dest": "USD",
+        "id": 1244,
+        "montant": 1000000,
+        "source": "EUR",
+        "taux": 1.2234
+    }
+]
+```
+### retrieve Operation Change by {counterpart} by {source} by {dest} and {date}
+```bash
+curl -X GET "http://localhost:8080/operation-change/counterpart/Banque_Radin/source/EUR/dest/USD/date/2021-06-20"  | python -m json.tool
+```
+```yaml
+[
+    {
+        "counterpart": "Banque_Radin",
+        "date": "2021-06-20",
+        "dest": "USD",
+        "id": 1244,
+        "montant": 1000000,
+        "source": "EUR",
+        "taux": 1.2234
+    }
+]
+```
+## DELETE
+### delete Operation Change by {id}
+```bash
+curl -X GET "http://localhost:8080/operation-change/id/1243"  | python -m json.tool
+```
+```yaml
+{
+"counterpart": "JP_Aycart",
+"date": "2021-06-22",
+"dest": "JPY",
+"id": 1243,
+"montant": 1000,
+"source": "EUR",
+"taux": 132.08
+}
+```
+```bash
+curl -X DELETE "http://localhost:8080/operation-change/id/1243"
+curl -X GET "http://localhost:8080/operation-change/id/1243"  
+```
+```yaml
+NONE
+```
+## PUT
+### update Operation Change for a defined {id}
+#### Finalement la Banque Radin souhaite passer par sa filiale roumaine Banque Radinum Bucharest,
+#### et transformer des RON en USD a un taux de 45000 RON = 1 USD pour le même montant et ce a partir du 21
+#### Nous allons donc modifier la transaction d'abord Attributs par Attributs puis tout d'un coup.
+
+### update montant of an Operation Change for a defined {id}
+```bash
+curl -X PUT "http://localhost:8080/operation-change/id/1243/montant/4000"  | python -m json.tool
+```
+### update date of an Operation Change for a defined {id}
+```bash
+curl -X PUT "http://localhost:8080/operation-change/id/1243/date/2020-06-25"  | python -m json.tool
+```
+### update counterpart of an Operation Change for a defined {id}
+```bash
+curl -X PUT "http://localhost:8080/operation-change/id/1243/counterpart/Jason_Dolphin"  | python -m json.tool
+```
+### update taux of an Operation Change for a defined {id}
+```bash
+curl -X PUT "http://localhost:8080/operation-change/id/1243/taux/106.4"  | python -m json.tool
+```
+
+```bash
+curl -X PUT -H "Content-type: application/json" -d "{\"source\" : \"USD\", \"dest\" : \"RON\", \"taux\" : 1.24, \"montant\" : 500, \"date\": \"2021-06-23\", \"counterpart\": \"Cyril_Lignac\"}" "http://localhost:8080/operation-change/id/1243"  | python -m json.tool
+```
