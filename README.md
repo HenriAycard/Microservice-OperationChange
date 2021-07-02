@@ -10,6 +10,20 @@ Il est possible grâce a ce microservice de publier, requêter, modifier ou bien
 
 ![Screenshot](DiagrammeDeClassOperationChange.png)
 
+# Installation
+## Set up the Spring Boot Application
+```bash
+git clone https://github.com/HenriAycard/Microservice-OperationChange.git
+```
+```bash
+./mvnw package && java -jar target/tauxchange
+```
+## Set up Docker
+```bash
+docker build -t springio/tauxchange .
+docker run -p 8000:8000 -t springio/tauxchange
+```
+# Rest API
 ## Methods
 
 | Methods   | Urls                                                                                  | Actions                                                                           |
