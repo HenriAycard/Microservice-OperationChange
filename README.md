@@ -13,6 +13,7 @@ Il est possible grâce a ce microservice de publier, requêter, modifier ou bien
 # Installation
 ## Set up the Spring Boot Application
 ```bash
+
 git clone https://github.com/HenriAycard/Microservice-OperationChange.git
 ```
 ```bash
@@ -24,6 +25,15 @@ docker build -t springio/tauxchange .
 docker run -p 8000:8000 -t springio/tauxchange
 ```
 # Rest API
+=======
+./mvnw package && java -jar target/operationchange
+```
+## Set up Docker
+```bash
+docker build -t springio/operationchange .
+docker run -p 8080:8080 -t springio/operationchange
+```
+
 ## Methods
 
 | Methods   | Urls                                                                                  | Actions                                                                           |
@@ -233,7 +243,6 @@ curl -X GET "http://localhost:8080/operation-change/source/EUR/dest/USD/date/202
 ]
 ```
 
-
 ### retrieve Operation Change by {counterpart}
 ```bash 
 curl -X GET "http://localhost:8080/operation-change/counterpart/Banque_Radin"  | python -m json.tool
@@ -395,6 +404,7 @@ curl -X PUT "http://localhost:8080/operation-change/id/1244/taux/12"  | python -
 ```
 
 ```bash
+
 curl -X PUT -H "Content-type: application/json" -d "{\"source\" : \"RON\", \"dest\" : \"USD\", \"taux\" : 12, \"montant\" : 45000, \"date\": \"2021-06-21\", \"counterpart\": \"Banque_Radinum_Bucharest\"}" "http://localhost:8080/operation-change/id/1244"  | python -m json.tool
 ```
 ```yaml
