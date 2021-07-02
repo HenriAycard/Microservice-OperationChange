@@ -18,4 +18,12 @@ public interface OperationChangeRepository extends JpaRepository<OperationChange
     List<OperationChange> findBySourceAndDest(String source, String dest);
 
     List<OperationChange> findBySourceAndDestAndDate(String source, String dest, String date);
+
+    List<OperationChange> findByCounterpart(String counterpart);
+
+    List<OperationChange> findByCounterpartAndDate(String counterpart,String date);
+
+    List<OperationChange> findByCounterpartAndSourceAndDest(String counterpart,String source,String dest);
+
+    List<OperationChange> findByCounterpartAndSourceAndDestAndDate(String counterpart,String source,String dest,String date);
 }
