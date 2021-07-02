@@ -10,6 +10,16 @@ Il est possible grâce a ce microservice de publier, requêter, modifier ou bien
 
 ![Screenshot](DiagrammeDeClassOperationChange.png)
 
+# Installation
+## Set up the Spring Boot Application
+```bash
+./mvnw package && java -jar target/operationchange
+```
+## Set up Docker
+```bash
+docker build -t springio/operationchange .
+docker run -p 8080:8080 -t springio/operationchange
+```
 ## Methods
 
 | Methods   | Urls                                                                                  | Actions                                                                           |
@@ -219,7 +229,6 @@ curl -X GET "http://localhost:8080/operation-change/source/EUR/dest/USD/date/202
     }
 ]
 ```
-
 
 ### retrieve Operation Change by {counterpart}
 ```bash 
