@@ -46,7 +46,7 @@ public class OperationController {
             JSONObject jsonObj = new JSONObject(response.getBody());
             BigDecimal taux = new BigDecimal(jsonObj.getString("taux"));
 
-            OperationChange oc = new OperationChange(cpe_change.getSource(), cpe_change.getDest(), cpe_change.getMontant(), taux, cpe_change.getDate());
+            OperationChange oc = new OperationChange(cpe_change.getSource(), cpe_change.getDest(), cpe_change.getMontant(), taux, cpe_change.getDate(),cpe_change.getCounterpart());
 
             try {
                 OperationChange _operationChange = repository.save(oc);
@@ -105,6 +105,20 @@ public class OperationController {
         }
     }
 
+    // curl -X GET "http://localhost:8080/operation-change/counterpart/HSBC"
+    @GetMapping("/operation-change/counterpart/{counterpart}")
+    public ResponseEntity<List<OperationChange>> getOperationChangeByCounterpart(@PathVariable String counterpart) throws RestClientException, IOException {
+        try{
+            List<OperationChange> operationChanges = repository.findByCounterpart(counterpart);
+
+            if (operationChanges.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity<>(operationChanges, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     // curl -X GET "http://localhost:8080/operation-change/date/2021-06-21"
     @GetMapping("/operation-change/date/{date}")
     public ResponseEntity<List<OperationChange>> getOperationChangeByDate(@PathVariable String date) throws RestClientException, IOException {

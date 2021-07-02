@@ -29,10 +29,13 @@ public class OperationChange {
     @Column(name="date_cours")
     private String date;
 
+    @Column(name="counterpart")
+    private String counterpart;
+
     public OperationChange(){
     }
 
-    public OperationChange(Long id_transaction, String source, String dest, Integer montant, BigDecimal taux, String date){
+    public OperationChange(Long id_transaction, String source, String dest, Integer montant, BigDecimal taux, String date,String counterpart){
         super();
         this.id_transaction = id_transaction;
         this.montant = montant;
@@ -40,23 +43,26 @@ public class OperationChange {
         this.dest = dest;
         this.taux = taux;
         this.date = date;
+        this.counterpart = counterpart;
     }
 
-    public OperationChange(String source, String dest, Integer montant, BigDecimal taux, String date){
+    public OperationChange(String source, String dest, Integer montant, BigDecimal taux, String date,String counterpart){
         super();
         this.montant = montant;
         this.source = source;
         this.dest = dest;
         this.taux = taux;
         this.date = date;
+        this.counterpart = counterpart;
     }
 
-    public OperationChange(String source, String dest, Integer montant, String date){
+    public OperationChange(String source, String dest, Integer montant, String date,String counterpart){
         super();
         this.montant = montant;
         this.source = source;
         this.dest = dest;
         this.date = date;
+        this.counterpart = counterpart;
     }
 
     // GETTER
@@ -79,6 +85,8 @@ public class OperationChange {
 
     public String getDate() { return date; }
 
+    public String getCounterpart() { return counterpart; }
+
     // SETTER
 
     public void setMontant(Integer montant) { this.montant = montant; }
@@ -90,6 +98,8 @@ public class OperationChange {
     public void setTaux(BigDecimal taux) { this.taux = taux; }
 
     public void setDate(String date) { this.date = date; }
+
+    public void setCounterpart(String counterpart) { this.counterpart = counterpart; }
 
 
 }
