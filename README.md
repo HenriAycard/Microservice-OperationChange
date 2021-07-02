@@ -137,7 +137,6 @@ curl -X GET "http://localhost:8080/operation-change/montant/1000"  | python -m j
         "taux": 132.08
     }
 ]
-
 ```
 ### retrieve Operation Change by {date}
 ```bash
@@ -316,27 +315,82 @@ NONE
 ```
 ## PUT
 ### update Operation Change for a defined {id}
-#### Finalement la Banque Radin souhaite passer par sa filiale roumaine Banque Radinum Bucharest,
-#### et transformer des RON en USD a un taux de 45000 RON = 1 USD pour le même montant et ce a partir du 21
+#### Finalement la Banque Radin souhaite passer par sa filiale roumaine Banque_Radinum_Bucharest,
+#### et transformer des RON en USD a un taux de 12 RON = 1 USD pour le montant de 45000 et ce a partir du 21/06
 #### Nous allons donc modifier la transaction d'abord Attributs par Attributs puis tout d'un coup.
 
 ### update montant of an Operation Change for a defined {id}
 ```bash
-curl -X PUT "http://localhost:8080/operation-change/id/1243/montant/4000"  | python -m json.tool
+curl -X PUT "http://localhost:8080/operation-change/id/1244/montant/45000"  | python -m json.tool
+```
+```yaml
+    {
+        "counterpart": "Banque_Radin",
+        "date": "2021-06-20",
+        "dest": "USD",
+        "id": 1244,
+        "montant": 45000,
+        "source": "EUR",
+        "taux": 1.2234
+    }
 ```
 ### update date of an Operation Change for a defined {id}
 ```bash
-curl -X PUT "http://localhost:8080/operation-change/id/1243/date/2020-06-25"  | python -m json.tool
+curl -X PUT "http://localhost:8080/operation-change/id/1244/date/2020-06-25"  | python -m json.tool
+```
+```yaml
+{
+    "counterpart": "Banque_Radin",
+    "date": "2020-06-21",
+    "dest": "USD",
+    "id": 1244,
+    "montant": 45000,
+    "source": "EUR",
+    "taux": 1.2234
+}
 ```
 ### update counterpart of an Operation Change for a defined {id}
 ```bash
-curl -X PUT "http://localhost:8080/operation-change/id/1243/counterpart/Jason_Dolphin"  | python -m json.tool
+curl -X PUT "http://localhost:8080/operation-change/id/1244/counterpart/Banque_Radinum_Bucharest"  | python -m json.tool
+```
+```yaml
+{
+    "counterpart": "Banque_Radinum_Bucharest",
+    "date": "2020-06-21",
+    "dest": "USD",
+    "id": 1244,
+    "montant": 45000,
+    "source": "EUR",
+    "taux": 1.2234
+}
 ```
 ### update taux of an Operation Change for a defined {id}
 ```bash
-curl -X PUT "http://localhost:8080/operation-change/id/1243/taux/106.4"  | python -m json.tool
+curl -X PUT "http://localhost:8080/operation-change/id/1244/taux/12"  | python -m json.tool
+```
+```yaml
+{
+    "counterpart": "Banque_Radinum_Bucharest",
+    "date": "2020-06-21",
+    "dest": "USD",
+    "id": 1244,
+    "montant": 45000,
+    "source": "EUR",
+    "taux": 12
+}
 ```
 
 ```bash
-curl -X PUT -H "Content-type: application/json" -d "{\"source\" : \"USD\", \"dest\" : \"RON\", \"taux\" : 1.24, \"montant\" : 500, \"date\": \"2021-06-23\", \"counterpart\": \"Cyril_Lignac\"}" "http://localhost:8080/operation-change/id/1243"  | python -m json.tool
+curl -X PUT -H "Content-type: application/json" -d "{\"source\" : \"RON\", \"dest\" : \"USD\", \"taux\" : 12, \"montant\" : 45000, \"date\": \"2021-06-21\", \"counterpart\": \"Banque_Radinum_Bucharest\"}" "http://localhost:8080/operation-change/id/1244"  | python -m json.tool
+```
+```yaml
+{
+    "counterpart": "Banque_Radinum_Bucharest",
+    "date": "2021-06-21",
+    "dest": "USD",
+    "id": 1244,
+    "montant": 45000,
+    "source": "RON",
+    "taux": 12
+}
 ```
