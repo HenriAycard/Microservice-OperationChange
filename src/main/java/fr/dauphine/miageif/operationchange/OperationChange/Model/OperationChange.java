@@ -66,6 +66,9 @@ public class OperationChange {
     }
 
     // GETTER
+    public Long getId() {
+        return id_transaction;
+    }
 
     public Integer getMontant() {
         return montant;

@@ -24,7 +24,7 @@ public class OperationController {
     private OperationChangeRepository repository;
 
     // POST
-    // curl -X POST -H "Content-type: application/json" -d "{\"source\" : \"EUR\", \"dest\" : \"USD\", \"montant\" : 500, \"date\": \"2021-06-23\"}" "http://localhost:8080/operation-change"
+    // curl -X POST -H "Content-type: application/json" -d "{\"source\" : \"EUR\", \"dest\" : \"USD\", \"taux\" : 1.23, \"montant\" : 500, \"date\": \"2021-06-23\", \"counterpart\": \"Goldman_Perrin\"}" "http://localhost:8080/operation-change"
     @PostMapping(value = "/operation-change",
             consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
@@ -105,7 +105,7 @@ public class OperationController {
         }
     }
 
-    // curl -X GET "http://localhost:8080/operation-change/counterpart/HSBC"
+    // curl -X GET "http://localhost:8080/operation-change/counterpart/JP_Aycart"
     @GetMapping("/operation-change/counterpart/{counterpart}")
     public ResponseEntity<List<OperationChange>> getOperationChangeByCounterpart(@PathVariable String counterpart) throws RestClientException, IOException {
         try{
@@ -119,6 +119,8 @@ public class OperationController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
     // curl -X GET "http://localhost:8080/operation-change/date/2021-06-21"
     @GetMapping("/operation-change/date/{date}")
     public ResponseEntity<List<OperationChange>> getOperationChangeByDate(@PathVariable String date) throws RestClientException, IOException {
@@ -164,11 +166,56 @@ public class OperationController {
         }
     }
 
+    // curl -X GET "http://localhost:8080/operation-change/counterpart/Goldman_Perrin/source/EUR/dest/JPY"
+    @GetMapping("/operation-change/counterpart/{counterpart}/source/{source}/dest/{dest}")
+    public ResponseEntity<List<OperationChange>> getOperationChangeByCounterpartAndSourceAndDest(@PathVariable String counterpart,@PathVariable String source, @PathVariable String dest) throws RestClientException, IOException {
+        try{
+            List<OperationChange> operationChanges = repository.findByCounterpartAndSourceAndDest(counterpart,source, dest);
+
+            if (operationChanges.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity<>(operationChanges, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    // curl -X GET "http://localhost:8080/operation-change/counterpart/Goldman_Perrin/date/2021-06-21"
+    @GetMapping("/operation-change/counterpart/{counterpart}/date/{date}")
+    public ResponseEntity<List<OperationChange>> getOperationChangeByCounterpartAndDate(@PathVariable String counterpart,@PathVariable String date) throws RestClientException, IOException {
+        try{
+            List<OperationChange> operationChanges = repository.findByCounterpartAndDate(counterpart,date);
+
+            if (operationChanges.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity<>(operationChanges, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    // curl -X GET "http://localhost:8080/operation-change/counterpart/Goldman_Perrin/source/EUR/dest/JPY/date/2021-06-21"
+    @GetMapping("/operation-change/counterpart/{counterpart}/source/{source}/dest/{dest}/date/{date}")
+    public ResponseEntity<List<OperationChange>> getOperationChangeByCounterpartAndSourceAndDestAndDate(@PathVariable String counterpart,@PathVariable String source,@PathVariable String dest,@PathVariable String date) throws RestClientException, IOException {
+        try{
+            List<OperationChange> operationChanges = repository.findByCounterpartAndSourceAndDestAndDate(counterpart,source,dest,date);
+
+            if (operationChanges.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity<>(operationChanges, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     // curl -X GET "http://localhost:8080/operation-change/source/EUR/dest/USD/date/2021-06-23"
     @GetMapping("/operation-change/source/{source}/dest/{dest}/date/{date}")
     public ResponseEntity<List<OperationChange>> getOperationChangeBySourceAndDestAndDate(@PathVariable String source, @PathVariable String dest, @PathVariable String date) throws RestClientException, IOException {
         try{
-            List<OperationChange> operationChanges = repository.findBySourceAndDestAndDate(source, dest,date);
+            List<OperationChange> operationChanges = repository.findBySourceAndDestAndDate(source, dest, date);
 
             if (operationChanges.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -183,5 +230,94 @@ public class OperationController {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
         return new HttpEntity<>(headers);
+    }
+
+    // DELETE
+    // curl -X DELETE "http://localhost:8080/operation-change/id/1243"
+    @DeleteMapping("/operation-change/id/{id}")
+    public ResponseEntity<HttpStatus> deleteOperationChange(@PathVariable long id) {
+        try {
+            repository.deleteById(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    // PUT
+    // curl -X PUT -H "Content-type: application/json" -d "{\"source\" : \"USD\", \"dest\" : \"RON\", \"taux\" : 1.24, \"montant\" : 500, \"date\": \"2021-06-23\", \"counterpart\": \"Cyril_Lignac\"}" "http://localhost:8080/operation-change/id/1243"
+    @PutMapping("/operation-change/id/{id}")
+    public ResponseEntity<OperationChange> updateOperationChange(@PathVariable long id, @RequestBody OperationChange operationChange) {
+
+        Optional<OperationChange> operationChangeData = repository.findById(id);
+
+        if (operationChangeData.isPresent()) {
+            OperationChange _operationChange = operationChangeData.get();
+            _operationChange.setDestination(operationChange.getDest());
+            _operationChange.setSource(operationChange.getSource());
+            _operationChange.setTaux(operationChange.getTaux());
+            _operationChange.setDate(operationChange.getDate());
+            _operationChange.setMontant(operationChange.getMontant());
+            _operationChange.setCounterpart(operationChange.getCounterpart());
+            return new ResponseEntity<>(repository.save(_operationChange), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+    }
+    // curl -X PUT "http://localhost:8080/operation-change/id/1243/date/2020-06-25"
+    @PutMapping("/operation-change/id/{id}/date/{date}")
+    public ResponseEntity<OperationChange> updateDateForOperationChange(@PathVariable long id, @PathVariable String date) {
+        Optional<OperationChange> operationChangeData = repository.findById(id);
+
+        if (operationChangeData.isPresent()) {
+            OperationChange _operationChange = operationChangeData.get();
+            _operationChange.setDate(date);
+            return new ResponseEntity<>(repository.save(_operationChange), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    // curl -X PUT "http://localhost:8080/operation-change/id/1243/montant/4000"
+    @PutMapping("/operation-change/id/{id}/montant/{montant}")
+    public ResponseEntity<OperationChange> updateMontantForOperationChange(@PathVariable long id, @PathVariable Integer montant) {
+        Optional<OperationChange> operationChangeData = repository.findById(id);
+
+        if (operationChangeData.isPresent()) {
+            OperationChange _operationChange = operationChangeData.get();
+            _operationChange.setMontant(montant);
+            return new ResponseEntity<>(repository.save(_operationChange), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    // curl -X PUT "http://localhost:8080/operation-change/id/1243/counterpart/Jason_Dolphin"
+    @PutMapping("/operation-change/id/{id}/counterpart/{counterpart}")
+    public ResponseEntity<OperationChange> updateCounterpartForOperationChange(@PathVariable long id, @PathVariable String counterpart) {
+        Optional<OperationChange> operationChangeData = repository.findById(id);
+
+        if (operationChangeData.isPresent()) {
+            OperationChange _operationChange = operationChangeData.get();
+            _operationChange.setCounterpart(counterpart);
+            return new ResponseEntity<>(repository.save(_operationChange), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    // curl -X PUT "http://localhost:8080/operation-change/id/1243/taux/106.4"
+    @PutMapping("/operation-change/id/{id}/taux/{taux}")
+    public ResponseEntity<OperationChange> updateTauxForOperationChange(@PathVariable long id, @PathVariable BigDecimal taux) {
+        Optional<OperationChange> operationChangeData = repository.findById(id);
+
+        if (operationChangeData.isPresent()) {
+            OperationChange _operationChange = operationChangeData.get();
+            _operationChange.setTaux(taux);
+            return new ResponseEntity<>(repository.save(_operationChange), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }
